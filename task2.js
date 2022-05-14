@@ -68,9 +68,11 @@ const moves =  [
 
 
 
+
 //Деструктуризация статов Лютого
 let {maxHealth: monsterHealth, name, moves: monsterMoveSet} = monster
 const [claw, fireBreath, tail] = monsterMoveSet
+
 
 let heroCoolDownSet = [0, 0, 0, 0];
 let monsterCoolDownSet = [0, 0, 0];
@@ -87,28 +89,30 @@ let healthHero = document.createElement('span')
 healthHero.textContent =  +prompt('Выберерти сложность', '')
 let heroEvstf = healthHero.textContent;
 heroMaxHealt.append(healthHero);
+
+const attackToggler  = heroMaxHealt.classList
+
+
+ //Ходы Евстафия
+ const heroMoves = document.querySelectorAll('.moveHero');
+ let heroStats = [];
     
 
 let startButton = document.querySelector('.start');
     startButton.addEventListener('click', () => monsterStepChoise())
     startButton.addEventListener('click', () => heroMoves.forEach((el) => el.classList.remove('hide')));
 
-//Ходы Евстафия
-let heroMoves = document.querySelectorAll('.moveHero');
-
+    heroMoves.forEach((button, i) => button.addEventListener('click',() => {
+        heroStats = destructMoveSet(i);
+        heroCoolDownSet[i] = heroStats[4] + 1;
+        if (!(heroCoolDownSet[i] === 0)) button.setAttribute('disabled', 'disabled');
+        action(moves, heroStats, i, 'pink');
+        finalDamage(); 
+  
+    }))
 //coolDown Евстафия
-let heroStats = [];
-
-heroMoves.forEach((button, i) => button.addEventListener('click',() => {
-    heroStats = destructMoveSet(i);
-    heroCoolDownSet[i] = heroStats[4] + 1;
-    if (!(heroCoolDownSet[i] === 0)) button.setAttribute('disabled', 'disabled');
-    action(moves, heroStats, i, 'pink');
-    finalDamage(); 
-}))
-
-
  heroMoves.forEach((button) => button.addEventListener('click', () => {
+
     heroCoolDownSet = heroCoolDownSet.map((el) => {
       return  el === 0 ? el : el - (el/el);
     });
@@ -117,7 +121,6 @@ heroMoves.forEach((button, i) => button.addEventListener('click',() => {
     });
   
  }))
-
 
 
 //Ходы монстра
@@ -134,13 +137,12 @@ function actionMonster(index)  {
         return monsterStats;
 };
 
-
 function monsterStepChoise()  {
    let im = Math.floor(Math.random()*(3));//Выбор удара
      return actionMonster(im);//retutn [monsterStats]
   
    } 
-let attackToggler  = heroMaxHealt.classList
+
 //общие функции
 function finalDamage() {
       let phDamageForHero = countDamage(monsterStats[0], heroStats[2]);//damage armor
@@ -166,6 +168,7 @@ function chooseWinner() {
     span.style.height = span.style.width = '40px'
     startButton.after(span);
     heroMoves.forEach((button) => button.classList.add('hide'));
+   useReload();
     
 } else if (heroEvstf <= 0) {
     let span = document.createElement('span');
@@ -175,20 +178,23 @@ function chooseWinner() {
     span.style.height = span.style.width = '40px'
     startButton.after(span);
     heroMoves.forEach((button) => button.classList.add('hide'));
+    useReload();
 }
 else {
 
     heroStats = [];
     monsterStats = [];
     do {
-       setTimeout(() => {
+         setTimeout(() => {
         monsterStats = monsterStepChoise()
        }, 2000) 
    
       attackToggler.toggle('attack!')
+
       
      } while (attackToggler.includes('attack!'))
-}};
+    }
+}
 
 function destructMoveSet(index) {
     const {name,
@@ -211,7 +217,7 @@ function countDamage(damage, armor) {
 }
 
 function action(arr, stats, index, color)  {
-    let ul = document.querySelector('ul');
+    let ul = document.querySelector('.movesList');
     let move = document.createElement('li');
     move.textContent = `${arr[index]['name']} 
      физ. урон: ${stats[0]} 
@@ -229,6 +235,30 @@ function coolDownCounter(arr) {
      console.log(arr)
      return arr;
  } 
+
+ function useReload() {
+    let restartButton = document.createElement('button');
+    restartButton.onclick = () => document.location.reload();
+    restartButton.textContent = 'restart'
+    startButton.after(restartButton);
+ }
+
+ //Карточки со статами 
+ moves.forEach((move) => {
+     let div = document.createElement('div');
+     let ull = document.createElement('ul');
+    for (key in move) {
+        let cardLine = document.createElement('li')
+        cardLine.textContent = `${key}: ${move[key]}`
+        ull.append(cardLine)
+    }
+    div.style.backgroundColor = '#f4a460'
+    div.append(ull);
+    let discript = document.querySelector('.discript');
+    discript.append(div);
+ })
+
+
 
 
 

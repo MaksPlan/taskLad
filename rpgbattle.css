@@ -17,6 +17,9 @@ li {
 } */
 .gameBoard {
     border: 5px;
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-around; */
 }
 /* .movesList {
 } */
@@ -43,4 +46,25 @@ li {
 
 .hide {
     visibility: hidden;
-};
+}
+
+.table {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.health {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.discript {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    /* max-width: 400px; */
+    max-height: 800px;
+    padding-left: 30px;
+}
